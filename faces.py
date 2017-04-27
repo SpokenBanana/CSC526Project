@@ -79,8 +79,9 @@ def compute_HOG_features(image):
     spaces = [-math.pi + ((math.pi * 2)/12) * i for i in range(12)]
 
     # Split image into 9 cells, here are their ranges in each direction
-    ycells = [(0, 10), (10, 20), (20, 30)]
-    xcells = [(0, 10), (10, 20), (20, 32)]
+    csize = image.shape[0] // 3
+    ycells = [(0, csize), (csize, csize*2), (csize*2, image.shape[0])]
+    xcells = [(0, csize), (csize, csize*2), (csize*2, image.shape[1])]
 
     cbins = []
     for y in ycells:
