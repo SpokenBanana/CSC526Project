@@ -12,15 +12,10 @@ def read_image(file_name):
     """Read PGM file as numpy array."""
     with open(file_name, 'rb') as f:
         buf = f.read()
-
-    try:
-        header, width, height, max_val = re.search(
-            b"(^P5\s(?:\s*#.*[\r\n])*"
-            b"(\d+)\s(?:\s*#.*[\r\n])*"
-            b"(\d+)\s(?:\s*#.*[\r\n])*"
-            b"(\d+)\s(?:\s*#.*[\r\n]\s)*)", buf).groups()
-    except AttributeError:
-        raise ValueError("Not a PGM: '%s'" % file_name)
+    header, width, height, max_val = re.search(
+        b"(^P5\s(?:\s*#.*[\r\n])*(\d+)\s(?:\s*#.*[\r\n])*"
+        b"(\d+)\s(?:\s*#.*[\r\n])*"
+        b"(\d+)\s(?:\s*#.*[\r\n]\s)*)", buf).groups()
     return np.frombuffer(buf, dtype='u1' if int(max_val) < 256 else '>u2',
                          count=int(width)*int(height), offset=len(header)
                          ).reshape((int(height), int(width)))
@@ -101,7 +96,6 @@ def get_feature_labels(images):
     """Images is a 2D array of [image_name, image_object]. From this,
        compute the features and labels for image"""
     # Testing for recognizing individuals
-    # TODO: Test for the other labels
     vals = ['megak', 'night', 'glickman', 'cheyer', 'an2i', 'bpm', 'saavik',
             'kk49', 'tammo', 'steffi', 'boland', 'mitchell', 'sz24', 'danieln',
             'karyadi', 'ch4f', 'kawamura', 'phoebe', 'at33', 'choon']
@@ -111,11 +105,6 @@ def get_feature_labels(images):
 
 
 if __name__ == "__main__":
-    # from matplotlib import pyplot
-    # image = read_image("data/an2i_left_angry_open_4.pgm", byteorder='<')
-    # compute_HOG_features(image)
-    # pyplot.imshow(image, pyplot.cm.gray)
-    # pyplot.show()
     images = get_images()
     feature, label = get_feature_labels(images)
     xtrain, xtest, ytrain, ytest = train_test_split(feature, label,
