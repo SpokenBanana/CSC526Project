@@ -92,14 +92,23 @@ def compute_HOG_features(image):
     return np.array(cbins).flatten()
 
 
-def get_feature_labels(images):
+def get_feature_labels(images, label=0):
     """Images is a 2D array of [image_name, image_object]. From this,
        compute the features and labels for image"""
     # Testing for recognizing individuals
-    vals = ['megak', 'night', 'glickman', 'cheyer', 'an2i', 'bpm', 'saavik',
-            'kk49', 'tammo', 'steffi', 'boland', 'mitchell', 'sz24', 'danieln',
-            'karyadi', 'ch4f', 'kawamura', 'phoebe', 'at33', 'choon']
-    labels = [vals.index(i[0].split('_')[0]) for i in images]
+    if label == 0:  # name
+        vals = ['megak', 'night', 'glickman', 'cheyer', 'an2i', 'bpm',
+                'saavik', 'kk49', 'tammo', 'steffi', 'boland', 'mitchell',
+                'sz24', 'danieln', 'karyadi', 'ch4f', 'kawamura', 'phoebe',
+                'at33', 'choon']
+    elif label == 1:  # pose
+        vals = ['left', 'right', 'up', 'straight']
+    elif label == 2:  # expression
+        vals = ['neutral', 'happy', 'sad', 'angry']
+    elif label == 3:  # eyes
+        vals = ['open', 'sunglasses']
+
+    labels = [vals.index(i[0].split('_')[label]) for i in images]
     features = [compute_HOG_features(i[1]) for i in images]
     return features, labels
 
