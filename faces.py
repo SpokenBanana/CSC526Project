@@ -6,6 +6,7 @@ import numpy as np
 from sklearn.metrics import accuracy_score
 from sklearn.model_selection import train_test_split
 from sklearn.ensemble import RandomForestClassifier
+from sklearn.model_selection import cross_val_score
 
 
 def read_image(file_name):
@@ -113,6 +114,11 @@ def get_feature_labels(images, label=0):
     return features, labels
 
 
+def cross_validation(train, test, model):
+    scores = cross_val_score(model, train, test, cv=10)
+    return scores.mean(), scores.std()
+
+
 if __name__ == "__main__":
     images = get_images()
     feature, label = get_feature_labels(images)
@@ -122,3 +128,4 @@ if __name__ == "__main__":
     clf.fit(xtrain, ytrain)
     predicted = clf.predict(xtest)
     print(accuracy_score(ytest, predicted))
+    print(cross_validation(feature, label, clf))
